@@ -6,19 +6,30 @@ cloudwatch = boto3.client('cloudwatch')
 paginator = cloudwatch.get_paginator('describe_alarms')
 count = 0
 
-def done():
-    sys.exit(0)
+def done(n):
+    if n == 1:
+        sys.exit(0)
+    else:
+        main()
 
-for response in paginator.paginate(StateValue='INSUFFICIENT_DATA'):
+
+#You can change this StateValue to either OK, ALARM, or INSUFFICIENT_DATA. We are only interested in any alarms though
+for response in paginator.paginate(StateValue='ALARM'):
+    #If their are no alarms then you cannot assign the response to the string varialbe so you need to use try except
     try:
         string = response['MetricAlarms'][count]['AlarmDescription']
         while True:
             print("Alarm description No.{} ".format(count+1) + string)
-#response['MetricAlarms'][count]['AlarmDescription'])
             count  = count + 1
             try:
                 string = response['MetricAlarms'][count]['AlarmDescription']
             except:
-                done()
+                done(2)
     except:
-        print("Nothing to alarm")
+        if count == 0:
+            print("Nothing to alarm")
+            done(1)
+
+def main():
+    print("Not exiting as 0")
+sys.exit(1)
