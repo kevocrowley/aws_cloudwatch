@@ -1,0 +1,19 @@
+#!/usr/bin/python
+import boto3
+import sys
+
+cloudwatch = boto3.client('cloudwatch')
+paginator = cloudwatch.get_paginator('describe_alarms')
+count = 0
+
+def done():
+    sys.exit(0)
+
+for response in paginator.paginate(StateValue='ALARM'):
+        while True:
+            print("Alarm description No.{} ".format(count) + response['MetricAlarms'][count]['AlarmDescription'])
+            count  = count + 1
+            try:
+                string = response['MetricAlarms'][count]['AlarmDescription']
+            except:
+                done()
