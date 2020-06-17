@@ -9,11 +9,16 @@ count = 0
 def done():
     sys.exit(0)
 
-for response in paginator.paginate(StateValue='ALARM'):
+for response in paginator.paginate(StateValue='INSUFFICIENT_DATA'):
+    try:
+        string = response['MetricAlarms'][count]['AlarmDescription']
         while True:
-            print("Alarm description No.{} ".format(count) + response['MetricAlarms'][count]['AlarmDescription'])
+            print("Alarm description No.{} ".format(count+1) + string)
+#response['MetricAlarms'][count]['AlarmDescription'])
             count  = count + 1
             try:
                 string = response['MetricAlarms'][count]['AlarmDescription']
             except:
                 done()
+    except:
+        print("Nothing to alarm")
